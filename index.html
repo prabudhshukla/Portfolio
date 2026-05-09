@@ -22,17 +22,16 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="https://github.com/prabudhshukla">PRABUDH<span class="text-primary">SHUKLA</span></a>
+            <a class="navbar-brand fw-bold" href="https://github.com/prabudhshukla"><span class="text-primary"></span></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="#" id="experience-link">Experience</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#automation">Automation</a></li>
                     <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
                     <li class="nav-item"><a class="nav-link btn btn-outline-primary ms-lg-3" href="Resume.pdf" download rel="noopener">Download CV</a></li>
-                    <li class="nav-item"><a class="nav-link btn btn-outline-primary ms-lg-3" href="mailto:Prabudhs284@gmail.com">Contact Me</a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-outline-primary ms-lg-3" href="#" id="contact-link">Contact Me</a></li>
                 </ul>
             </div>
         </div>
@@ -161,7 +160,7 @@
 
     <footer class="bg-dark text-white text-center py-5">
         <div class="container">
-            <p class="mb-2">Prabudh Shukla | +91 8840938886 | Prabudhs284@gmail.com</p>
+            <p class="mb-2"> © 2026 Prabudh Shukla. All rights reserved</p>
             
         </div>
     </footer>
@@ -228,8 +227,78 @@
                 loadExperience();
                 document.getElementById('experience').scrollIntoView({behavior:'smooth'});
             });
+            const contactLink = document.getElementById('contact-link');
+            if(contactLink) contactLink.addEventListener('click', function(e){
+                e.preventDefault();
+                loadContact();
+            });
         });
+        
+        async function loadContact(){
+            const modalBody = document.getElementById('contact-modal-body');
+            if(modalBody) modalBody.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>';
+            try{
+                const res = await fetch('contact.txt');
+                if(!res.ok) throw new Error('Network response not ok');
+                const text = await res.text();
+                const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+                let name = lines[0] || '';
+                let email = '';
+                let phone = '';
+                const links = [];
+                for(let i=1;i<lines.length;i++){
+                    const l = lines[i];
+                    if(/email[:\s]/i.test(l) || l.toLowerCase().startsWith('email')){
+                        email = l.replace(/^[Ee]mail[:\s]*/,'').trim();
+                    } else if(/contact|phone|tel/i.test(l)){
+                        const m = l.match(/(\+?\d[\d\s-]+)/);
+                        phone = m ? m[1].trim() : l.replace(/^[^\d+]*/,'').trim();
+                    } else if(/^https?:\/\//i.test(l)){
+                        links.push(l);
+                    } else if(/@/.test(l) && !l.toLowerCase().includes('email')){
+                        const match = l.match(/([\w.+-]+@[\w-]+\.[\w.-]+)/);
+                        if(match) email = match[1];
+                    }
+                }
+                let out = '<div class="p-3">';
+                if(name) out += `<h5 class="mb-1">${name}</h5>`;
+                out += '<div class="mb-2 small">';
+                if(email) out += `<div>Email: <a href="mailto:${email}">${email}</a></div>`;
+                if(phone) out += `<div>Phone: <a href="tel:${phone}">${phone}</a></div>`;
+                out += '</div>';
+                if(links.length){
+                    out += '<div class="mt-2">';
+                    links.forEach(u => out += `<div><a href="${u}" target="_blank" rel="noopener">${u}</a></div>`);
+                    out += '</div>';
+                }
+                out += '</div>';
+                if(modalBody) modalBody.innerHTML = out;
+                const contactModalEl = document.getElementById('contactModal');
+                if(contactModalEl){
+                    const bsModal = new bootstrap.Modal(contactModalEl);
+                    bsModal.show();
+                }
+            }catch(e){
+                if(modalBody) modalBody.innerHTML = '<p class="text-danger">Could not load contact information.</p>';
+                console.error(e);
+            }
+        }
         </script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+        <!-- Contact Modal -->
+        <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="contactModalLabel">Contact</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body" id="contact-modal-body">
+                        <!-- populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
 </body>
 </html>
