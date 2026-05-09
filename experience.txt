@@ -1,0 +1,19 @@
+WIPRO | Technical Lead – Voice Operations | June 2022 – Present
+
+• Secure Automation & CyberArk: Integrated CyberArk with Python automation frameworks to ensure secure, vault-based credential management for automated maintenance and compliance checks.
+• AI-Assisted Development: Utilize GitHub Copilot and LLMs to optimize Python scripts, reducing code development time and improving reliability for global voice infrastructure.
+• Full-Stack Tool Development: Designed end-to-end applications; developed responsive Frontends (HTML/JS) and robust Backends (Python) for real-time hardware monitoring.
+• Hybrid Collaboration Management: Administer integrated environments spanning Cisco Unified Communications and Zoom Telephony, ensuring seamless interoperability and high availability.
+• Infrastructure Design: Lead global Voice Infrastructure design; manage technical scoping and Sign-off for RFT (Request for Tender) and RFP (Request for Proposal).
+• Security & Compliance: Developed automated workflows for VGW Certificate Renewals, ensuring 100% service uptime during certificate rotations.
+
+TELUS INTERNATIONAL | Network Engineer (Collaboration & Cloud) | Dec 2019 – June 2022
+
+• Provided L2/L3 support for multi-cluster Cisco (CUCM/CUC/Expressway) and Zoom Cloud environments.
+• Managed Webex Control Hub, Webex FedRAMP, and Amazon Connect cloud integrations.
+• Troubleshot complex SIP signaling and media stream issues across global VOIP deployments.
+
+HCLTECH | Analyst – T2 Engineer (Network Infrastructure) | Aug 2017 – Nov 2019
+
+• Performed Tier 2 technical analysis and support for enterprise network and voice infrastructure.
+• Monitored global network health, managing incident response and circuit-level troubleshooting

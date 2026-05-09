@@ -7,7 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <style>
-        :root { --primary-color: #0d6efd; --dark-bg: #121212; }
+        :root { --primary-color: #e1e5eb; --dark-bg: #121212; }
         body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: #f4f7f6; }
         .hero { background: linear-gradient(135deg, #1e1e1e 0%, #2c3e50 100%); color: white; padding: 120px 0 80px; }
         .navbar { background-color: rgba(18, 18, 18, 0.95) !important; backdrop-filter: blur(10px); }
@@ -22,13 +22,13 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="#">PRABUDH<span class="text-primary">.SHUKLA</span></a>
+            <a class="navbar-brand fw-bold" href="https://github.com/prabudhshukla">PRABUDH<span class="text-primary">SHUKLA</span></a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="#experience">Experience</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" id="experience-link">Experience</a></li>
                     <li class="nav-item"><a class="nav-link" href="#automation">Automation</a></li>
                     <li class="nav-item"><a class="nav-link" href="#projects">Projects</a></li>
                     <li class="nav-item"><a class="nav-link btn btn-outline-primary ms-lg-3" href="Resume.pdf" download rel="noopener">Download CV</a></li>
@@ -72,27 +72,12 @@
     <section id="experience" class="container py-5">
         <div class="row g-4">
             <div class="col-md-4">
-                <h2 class="fw-bold">9+ Years of Expertise</h2>
-                <p class="text-muted">Strategic lead specializing in the Cisco & Zoom Collaboration ecosystem, CyberArk vault-based secure automation, RFP/RFT lifecycles, and L3/L4 technical escalations.</p>
+                <h2 class="fw-bold">9+ Years of Experience </h2>
+                <p class="text-muted">Strategic Technical Lead with over 9 years of experience in Cisco/Cloud(Zoom/Webex) Collaboration and Network Automation. With Handon in Development Testing Full-Stack automation tools and leveraging LLMs and GitHub Copilot to accelerate development. Specialized in secure automation through CyberArk integration, managing global voice solutions, and leading L3/L4 technical escalations.</p>
             </div>
             <div class="col-md-8">
-                <div class="row">
-                    <div class="col-6 mb-3">
-                        <h5>AI & Automation</h5>
-                        <p class="small">Python (Netmiko, Selenium, Sync/Async), GitHub Copilot, Agentic AI, LLMs</p>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <h5>Full-Stack Dev & Security</h5>
-                        <p class="small">HTML/JS (Frontend), Python/SQL (Backend), CyberArk Integration, IPsec, TLS/SRTP</p>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <h5>Collaboration Platforms</h5>
-                        <p class="small">Cisco CUCM/CUC/Expressway, Webex, Zoom Ecosystem (BYOC/PSTN/Rooms)</p>
-                    </div>
-                    <div class="col-6 mb-3">
-                        <h5>Cloud Infrastructure</h5>
-                        <p class="small">Amazon Connect, AWS Cloud, Voice Gateways, SIP/WebRTC</p>
-                    </div>
+                <div id="experience-content" class="p-3">
+
                 </div>
             </div>
         </div>
@@ -106,6 +91,10 @@
                 <div class="skill-badge">CyberArk Integration</div>
                 <div class="skill-badge">LLM Integration</div>
                 <div class="skill-badge">Zoom Ecosystem</div>
+                <div class="skill-badge">Network Voice</div>
+                <div class="skill-badge">Voice Automation</div>
+                <div class="skill-badge">Ribbon SBC</div>
+                <div class="skill-badge">Cisco ISR 4k & 8k</div>
                 <div class="skill-badge">Amazon Connect</div>
                 <div class="skill-badge">AWS Cloud Arch</div>
                 <div class="skill-badge">SQL Server</div>
@@ -177,6 +166,70 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script>
+        async function loadExperience(){
+            const el = document.getElementById('experience-content');
+            el.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>';
+            try{
+                const res = await fetch('experience.txt');
+                if(!res.ok) throw new Error('Network response not ok');
+                const text = await res.text();
+                const blocks = text.split(/\r?\n\s*\r?\n/).map(b => b.trim()).filter(Boolean);
+                const html = blocks.map(b => {
+                    const lines = b.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+                        // Only treat a line containing '|' as a company/role heading.
+                        let headingIndex = lines.findIndex(l => l.includes('|'));
+                        let heading = '';
+                        let rest = lines;
+                        if (headingIndex !== -1) {
+                            heading = lines[headingIndex] || '';
+                            rest = lines.slice(0, headingIndex).concat(lines.slice(headingIndex + 1));
+                        }
+                        let company = heading;
+                        let meta = '';
+                        if (heading.includes('|')){
+                            const parts = heading.split('|').map(s => s.trim());
+                            company = parts[0];
+                            meta = parts.slice(1).join(' | ');
+                        }
+                    // If the detected heading looks like a key:value list item (contains ':' but not '|'),
+                    // treat it as a list item instead of rendering as the company heading.
+                    if (/:/.test(heading) && !heading.includes('|')){
+                        rest.unshift(heading);
+                        company = '';
+                        meta = '';
+                    }
+
+                    let blockHtml = `<div class="mb-4">`;
+                    if(company) blockHtml += `<h4 class="mb-1">${company}</h4>`;
+                    if(meta) blockHtml += `<p class="mb-2"><small class="text-muted">${meta}</small></p>`;
+                    if(rest.length){
+                        blockHtml += '<ul class="mb-0">';
+                        rest.forEach(line => {
+                            const li = line.replace(/^•\s*/,'').replace(/^\-\s*/,'');
+                            blockHtml += `<li>${li}</li>`;
+                        });
+                        blockHtml += '</ul>';
+                    }
+                    blockHtml += '</div>';
+                    return blockHtml;
+                }).join('');
+                el.innerHTML = html;
+            }catch(e){
+                el.innerHTML = '<p class="text-danger">Could not load experience.</p>';
+                console.error(e);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function(){
+            const link = document.getElementById('experience-link');
+            if(link) link.addEventListener('click', function(e){
+                e.preventDefault();
+                loadExperience();
+                document.getElementById('experience').scrollIntoView({behavior:'smooth'});
+            });
+        });
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
